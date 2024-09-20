@@ -29,14 +29,12 @@
     fileSystems = [ "/" ];
   };
 
-
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
    # Networking
   networking.hostName = "thinkpad";
-  networking.wireless.enable = true;
   networking.networkmanager.enable = true;
 
   # Time zone.
@@ -85,7 +83,7 @@
   };
 
   # Touchpad
-  services.xserver.libinput.enable = true;
+  services.libinput.enable = true;
 
   # User
   users.users.kevin = {
