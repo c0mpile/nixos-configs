@@ -242,9 +242,7 @@
       pkgs.weechatScripts.highmon
       pkgs.weechatScripts.autosort
       pkgs.weechatScripts.url_hint
-      pkgs.weechatScripts.weechat-otr
       pkgs.weechatScripts.weechat-notify-send
-      pkgs.weechatScripts.weechat-matrix
       pkgs.kdePackages.konversation
       kdePackages.kdsoap-ws-discovery-client
       pkgs.kdePackages.flatpak-kcm
@@ -300,9 +298,8 @@
   ];
 
   # Enable OpenGL
-  hardware.graphics = {
+  hardware.opengl = {
     enable = true;
-    enable32Bit = true;
     extraPackages = with pkgs; [
       rocmPackages.clr.icd
       pkgs.amdvlk
