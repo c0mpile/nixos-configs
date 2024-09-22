@@ -6,22 +6,100 @@
 
 {
   imports =
-    [
+    [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
+    
+  fileSystems."/" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
 
-  fileSystems = {
-    "/".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    "/home".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    "/root".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    "/nix".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    "/persist".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    "/.snapshots".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    "/var/log".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    "/var/lib/docker".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    "/var/lib/libvirt/images".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    "/var/lib/machines".options = [ "rw" "compress=zstd:3" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-  };
+  fileSystems."/home" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
+
+  fileSystems."/root" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
+
+  fileSystems."/persist" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
+
+  fileSystems."/nix" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
+
+  fileSystems."/.snapshots" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
+
+  fileSystems."/var/log" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
+
+  fileSystems."/var/lib/docker" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
+
+  fileSystems."/var/lib/libvirt/images" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
+
+  fileSystems."/var/lib/machines" =
+    { 
+      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
+    };
+
+  fileSystems."/boot" =
+    { 
+      options = [ "fmask=0077" "dmask=0077" ];
+    };
+    
+  fileSystems."/data/games" =
+    { device = "/dev/disk/by-uuid/a510978d-7996-49fa-a930-d7255a9b021e";
+      fsType = "btrfs";
+      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+    };
+    
+  fileSystems."/data/media" =
+    { device = "/dev/disk/by-uuid/a9836fc5-74a6-4bea-8846-94f2f86d6bf6";
+      fsType = "btrfs";
+      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+    };
+    
+  fileSystems."/data/downloads" =
+    { device = "/dev/disk/by-uuid/ac03eb56-b5c7-497f-9041-6d910f34d2dd";
+      fsType = "xfs";
+      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+    };
+    
+  fileSystems."/data/storage" =
+    { device = "/dev/disk/by-uuid/09924e80-eccb-4187-9489-7b03877c1b21";
+      fsType = "xfs";
+      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+    };
+    
+  fileSystems."/data/music" =
+    { device = "/dev/disk/by-uuid/f3c9136f-92eb-406b-a5b0-137685f445ea";
+      fsType = "xfs";
+      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+    };
+    
+   fileSystems."/data/movies" =
+    { device = "/dev/disk/by-uuid/6ed11e78-0e4d-4c64-a978-98f49747e768";
+      fsType = "xfs";
+      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+    };
 
   services.btrfs.autoScrub = {
     enable = true;
@@ -32,15 +110,26 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  
+  # Kernel
+    # Linux Kernel
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_zen;
+  boot.kernelParams = [ 
+    "quiet"
+    "splash"
+    "module_blacklist=pcspkr,snd_pcsp"
+  ];
 
-   # Networking
-  networking.hostName = "thinkpad";
+  networking.hostName = "nixos"; # Define your hostname.
+  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  # Enable networking
   networking.networkmanager.enable = true;
 
-  # Time zone.
+  # Set your time zone.
   time.timeZone = "America/New_York";
 
-  # Locale
+  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
@@ -55,23 +144,24 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  # X11
+  # Enable the X11 windowing system.
+  # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
 
+  # Enable the KDE Plasma Desktop Environment.
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
+
+  # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
     variant = "";
   };
 
-  # Desktop environment
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
-
-  # Printing
+  # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  # Sound
+  # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -79,64 +169,73 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
     #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
   };
 
-  # Touchpad
-  services.libinput.enable = true;
+  # Enable touchpad support (enabled default in most desktopManager).
+  # services.xserver.libinput.enable = true;
 
-  # User
+  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.kevin = {
     isNormalUser = true;
     description = "Kevin";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "lp" "audio" "floppy" "cdrom" "video" "adm" "users" "kvm" "input" ];
+    openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKJ1YsYIiU5Bgk4okuZP/EKNOIl3h1qGebemKX7q43Fs home" ];
     packages = with pkgs; [
-      eza
-      thefuck
-      fd
-      fzf
-      zsh
-      rustup
-      nerd-font-patcher
-      git
+      kdePackages.kate
+
     ];
   };
 
-  # Firefox
+  # Install firefox.
   programs.firefox.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # System packages
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
   environment.systemPackages = with pkgs; [
-    neovim
-    wget
-    tmux
-    btop
-    btrfs-progs
-    xfsprogs
-    nvme-cli
+      eza
+      thefuck
+      fd
+      fzf
+      ripgrep
+      zsh
+      git
+      neovim
+      wget
+      tmux
+      btop
+      btrfs-progs
+      xfsprogs
+      nvme-cli
+      
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
-  programs.mtr.enable = true;
-  programs.gnupg.agent = {
-     enable = true;
-     enableSSHSupport = true;
-  };
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
 
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  # services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = false;
+  # networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
