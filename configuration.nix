@@ -176,6 +176,19 @@
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
+  
+  # Optimize storage and automatic scheduled GC running
+  # If you want to run GC manually, use commands:
+  # `nix-store --optimize` for finding and eliminating redundant copies of identical store paths
+  # `nix-store --gc` for optimizing the nix store and removing unreferenced and obsolete store paths
+  # `nix-collect-garbage -d` for deleting old generations of user profiles
+  nix.settings.auto-optimise-store = true;
+  nix.optimise.automatic = true;
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -188,7 +201,7 @@
     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKJ1YsYIiU5Bgk4okuZP/EKNOIl3h1qGebemKX7q43Fs home" ];
     packages = with pkgs; [
       kdePackages.kate
-
+      
     ];
   };
 
@@ -198,44 +211,149 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # Flatpak support
+  services.flatpak.enable = true;
+  
+  # Gaming
+  programs.steam.enable = true;
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-      eza
-      thefuck
-      fd
-      fzf
-      ripgrep
-      zsh
-      git
-      neovim
-      wget
-      tmux
-      btop
-      btrfs-progs
-      xfsprogs
-      nvme-cli
-      
+      pkgs.eza
+      pkgs.thefuck
+      pkgs.fd
+      pkgs.fzf
+      pkgs.ripgrep
+      pkgs.zsh
+      pkgs.git
+      pkgs.neovim
+      pkgs.wget
+      pkgs.tmux
+      pkgs.btop
+      pkgs.btrfs-progs
+      pkgs.xfsprogs
+      pkgs.nvme-cli
+      pkgs.wireguard-tools
+      pkgs.libva-utils
+      pkgs.vscode-with-extensions
+      pkgs.brave
+      pkgs.weechat
+      pkgs.weechatScripts.highmon
+      pkgs.weechatScripts.autosort
+      pkgs.weechatScripts.url_hint
+      pkgs.weechatScripts.weechat-otr
+      pkgs.weechatScripts.weechat-notify-send
+      pkgs.weechatScripts.weechat-matrix
+      pkgs.kdePackages.konversation
+      kdePackages.kdsoap-ws-discovery-client
+      pkgs.kdePackages.flatpak-kcm
+      pkgs.qbittorrent-nox
+      pkgs.stremio
+      pkgs.docker
+      pkgs.docker-ls
+      pkgs.docker-compose
+      pkgs.docker
+      pkgs.lazydocker
+      pkgs.distrobox
+      pkgs.boxbuddy
+      pkgs.mpv
+      pkgs.mpvScripts.modernx
+      pkgs.python312
+      pkgs.python312Packages.pip
+      pkgs.element-desktop
+      pkgs.xmrig
+      pkgs.monero-gui
+      pkgs.p2pool
+      pkgs.protonup-qt
+      pkgs.protontricks
+      pkgs.gamemode
+      pkgs.winePackages.staging
+      pkgs.lutris
+      pkgs.bottles
+      pkgs.heroic
+      pkgs.papirus-icon-theme
+      pkgs.papirus-folders
+      pkgs.vimix-cursors
+      pkgs.vimix-icon-theme
+      pkgs.vimix-gtk-themes
+      pkgs.materia-kde-theme
+      pkgs.materia-theme
+      pkgs.qemu
+      pkgs.libvirt
+      pkgs.easyeffects
+      pkgs.nerdfonts
+      pkgs.btrfs-assistant
+      pkgs.snapper
+      pkgs.kitty
+      pkgs.kitty-img
+      pkgs.cmatrix
+      pkgs.pipes-rs
+      pkgs.rsclock
+      pkgs.cava
+      pkgs.figlet
+      pkgs._64gram
+      pkgs.vesktop
+      pkgs.gpt4all
+      pkgs.xwayland
+      pkgs.supersonic-wayland
   ];
+
+  # Enable OpenGL
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+    extraPackages = with pkgs; [
+      rocmPackages.clr.icd
+      pkgs.amdvlk
+      vaapiVdpau
+      libvdpau-va-gl
+      mesa
+    ];
+    extraPackages32 = with pkgs.pkgsi686Linux; [
+      vaapiVdpau
+      mesa
+      libvdpau-va-gl
+      pkgs.driversi686Linux.amdvlk
+    ];
+  };
+  
+  # AMD vulkan and vaapi
+  hardware.opengl.driSupport = true;
+  
+  environment.variables.AMD_VULKAN_ICD = "RADV";
+  
+  # Configuration
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];    
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+   programs.mtr.enable = true;
+   programs.gnupg.agent = {
+     enable = true;
+     enableSSHSupport = true;
+   };
 
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
+      AllowUsers = [ "kevin" ];
+    };
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+   networking.firewall.enable = false;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -243,6 +361,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "unstable"; # Did you read the comment?
 
 }
