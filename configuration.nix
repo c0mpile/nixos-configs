@@ -168,6 +168,13 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+  #    (softmaker-office.override {
+  #            officeVersion = {
+  #                edition = "nx";
+  #                version = "1218";
+  #                hash = "sha256-gsQQvO/hXl79jGhROaUdH2Xyu84rgmZto+WTmW2RjEM=";
+  #            };
+  #    })
       pkgs.eza
       pkgs.thefuck
       pkgs.fd
@@ -245,6 +252,14 @@
       pkgs.neofetch
       pkgs.fastfetch
       pkgs.ptyxis
+      pkgs.tree
+      pkgs.gst_all_1.gstreamer
+      pkgs.gst_all_1.gst-plugins-ugly
+      pkgs.gst_all_1.gst-plugins-good
+      pkgs.gst_all_1.gst-plugins-bad
+      pkgs.libglibutil
+      pkgs.glibc
+      pkgs.glib
   ];
 
   # passwordless sudo for wheel group
@@ -256,7 +271,7 @@
   users.extraGroups.docker.members = [ "kevin" ];
 
   # nix-direnv
-  programs.direnv.enable = true;
+  #programs.direnv.enable = true;
 
   # Enable OpenGL
   hardware.graphics = {
