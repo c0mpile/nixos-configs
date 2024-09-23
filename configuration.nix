@@ -10,96 +10,38 @@
       ./hardware-configuration.nix
     ];
     
-  fileSystems."/" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
+  fileSystems = {
+    "/data/games".device = "/dev/disk/by-uuid/a510978d-7996-49fa-a930-d7255a9b021e";
+    "/data/media".device = "/dev/disk/by-uuid/a9836fc5-74a6-4bea-8846-94f2f86d6bf6";
+    "/data/movies".device = "/dev/disk/by-uuid/6ed11e78-0e4d-4c64-a978-98f49747e768";
+    "/data/music".device = "/dev/disk/by-uuid/f3c9136f-92eb-406b-a5b0-137685f445ea";
+    "/data/storage".device = "/dev/disk/by-uuid/09924e80-eccb-4187-9489-7b03877c1b21";
+    "/data/downloads".device = "/dev/disk/by-uuid/ac03eb56-b5c7-497f-9041-6d910f34d2dd";
+    "/data/games".fsType = "btrfs";
+    "/data/media".fsType = "btrfs";
+    "/data/movies".fsType = "xfs";
+    "/data/music".fsType = "xfs";
+    "/data/storage".fsType = "xfs";
+    "/data/downloads".fsType = "xfs";
+    "/".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/home".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/root".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/persist".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/nix".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/.snapshots".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/var/log".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/var/lib/docker".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/var/lib/nixos-containers".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/var/lib/machines".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/var/lib/libvirt/images".options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/data/games".options = [ "noatime" "nofail" "x-systemd.device-timeout=10" "compress=zstd:1" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/data/media".options = [ "noatime" "nofail" "x-systemd.device-timeout=10" "compress=zstd:1" "ssd" "commit=120" "space_cache=v2" "discard=async" ];
+    "/data/movies".options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+    "/data/music".options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+    "/data/storage".options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+    "/data/downloads".options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
+  };
 
-  fileSystems."/home" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
-
-  fileSystems."/root" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
-
-  fileSystems."/persist" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
-
-  fileSystems."/nix" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
-
-  fileSystems."/.snapshots" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
-
-  fileSystems."/var/log" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
-
-  fileSystems."/var/lib/docker" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
-
-  fileSystems."/var/lib/libvirt/images" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
-
-  fileSystems."/var/lib/machines" =
-    { 
-      options = [ "rw" "compress=zstd:1" "noatime" "ssd" "commit=120" "space_cache=v2" ];
-    };
-
-  fileSystems."/boot" =
-    { 
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
-    
-  fileSystems."/data/games" =
-    { device = "/dev/disk/by-uuid/a510978d-7996-49fa-a930-d7255a9b021e";
-      fsType = "btrfs";
-      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
-    };
-    
-  fileSystems."/data/media" =
-    { device = "/dev/disk/by-uuid/a9836fc5-74a6-4bea-8846-94f2f86d6bf6";
-      fsType = "btrfs";
-      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
-    };
-    
-  fileSystems."/data/downloads" =
-    { device = "/dev/disk/by-uuid/ac03eb56-b5c7-497f-9041-6d910f34d2dd";
-      fsType = "xfs";
-      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
-    };
-    
-  fileSystems."/data/storage" =
-    { device = "/dev/disk/by-uuid/09924e80-eccb-4187-9489-7b03877c1b21";
-      fsType = "xfs";
-      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
-    };
-    
-  fileSystems."/data/music" =
-    { device = "/dev/disk/by-uuid/f3c9136f-92eb-406b-a5b0-137685f445ea";
-      fsType = "xfs";
-      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
-    };
-    
-   fileSystems."/data/movies" =
-    { device = "/dev/disk/by-uuid/6ed11e78-0e4d-4c64-a978-98f49747e768";
-      fsType = "xfs";
-      options = [ "noatime" "nofail" "x-systemd.device-timeout=10" ];
-    };
 
   services.btrfs.autoScrub = {
     enable = true;
@@ -120,8 +62,7 @@
     "module_blacklist=pcspkr,snd_pcsp"
   ];
 
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.hostName = "desktop"; # Define your hostname.
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -146,10 +87,11 @@
 
   # Enable the X11 windowing system.
   # You can disable this if you're only using the Wayland session.
-  services.xserver.enable = true;
+  #services.xserver.enable = true;
 
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
   services.desktopManager.plasma6.enable = true;
 
   # Configure keymap in X11
@@ -197,13 +139,19 @@
   users.users.kevin = {
     isNormalUser = true;
     description = "Kevin";
-    extraGroups = [ "networkmanager" "wheel" "lp" "audio" "floppy" "cdrom" "video" "adm" "users" "kvm" "input" ];
+    extraGroups = [ "networkmanager" "wheel" "lp" "audio" "floppy" "cdrom" "video" "adm" "users" "kvm" "input" "docker" ];
+    shell = pkgs.zsh;
+    useDefaultShell = true;
     openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKJ1YsYIiU5Bgk4okuZP/EKNOIl3h1qGebemKX7q43Fs home" ];
     packages = with pkgs; [
       kdePackages.kate
       
     ];
   };
+
+  # zsh
+  programs.zsh.enable = true;
+  users.defaultUserShell = pkgs.zsh;
 
   # Install firefox.
   programs.firefox.enable = true;
@@ -231,12 +179,13 @@
       pkgs.wget
       pkgs.tmux
       pkgs.btop
+      pkgs.p7zip
       pkgs.btrfs-progs
       pkgs.xfsprogs
       pkgs.nvme-cli
       pkgs.wireguard-tools
       pkgs.libva-utils
-      pkgs.vscode-with-extensions
+      pkgs.vscode.fhs
       pkgs.brave
       pkgs.weechat
       pkgs.weechatScripts.highmon
@@ -248,13 +197,10 @@
       pkgs.kdePackages.flatpak-kcm
       pkgs.qbittorrent-nox
       pkgs.stremio
-      pkgs.docker
-      pkgs.docker-ls
       pkgs.docker-compose
-      pkgs.docker
-      pkgs.lazydocker
       pkgs.distrobox
       pkgs.boxbuddy
+      pkgs.dive
       pkgs.mpv
       pkgs.mpvScripts.modernx
       pkgs.python312
@@ -270,8 +216,6 @@
       pkgs.lutris
       pkgs.bottles
       pkgs.heroic
-      pkgs.papirus-icon-theme
-      pkgs.papirus-folders
       pkgs.vimix-cursors
       pkgs.vimix-icon-theme
       pkgs.vimix-gtk-themes
@@ -294,11 +238,28 @@
       pkgs.vesktop
       pkgs.gpt4all
       pkgs.xwayland
+      pkgs.xwaylandvideobridge
       pkgs.supersonic-wayland
+      pkgs.gnumake
+      pkgs.nodejs_22
+      pkgs.neofetch
+      pkgs.fastfetch
+      pkgs.ptyxis
   ];
 
+  # passwordless sudo for wheel group
+  security.sudo.wheelNeedsPassword = false;
+
+  # Docker
+  virtualisation.docker.enable = true;
+  virtualisation.docker.storageDriver = "btrfs";
+  users.extraGroups.docker.members = [ "kevin" ];
+
+  # nix-direnv
+  programs.direnv.enable = true;
+
   # Enable OpenGL
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
       rocmPackages.clr.icd
@@ -314,9 +275,6 @@
       pkgs.driversi686Linux.amdvlk
     ];
   };
-  
-  # AMD vulkan and vaapi
-  hardware.opengl.driSupport = true;
   
   environment.variables.AMD_VULKAN_ICD = "RADV";
   
